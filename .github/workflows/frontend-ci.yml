@@ -1,0 +1,23 @@
+name: SPA - controles
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  verificacion:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - name: Dependencias desde lockfile
+        run: npm ci
+      - name: Auditoria de dependencias (bloquea altas)
+        run: npm audit --audit-level=high
+      - name: Pruebas y build
+        env:
+          VITE_API_URL: http://127.0.0.1:5000/api/v1
+        run: npm run check
